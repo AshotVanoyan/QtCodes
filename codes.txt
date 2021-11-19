@@ -41,8 +41,8 @@ int main(int argc, char *argv[]) {
     mw.show();
     return app.exec();
 }
-Ծրագիր 1.3.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 1.3.
 int main(int argc, char *argv[]) {
 
     QApplication app(argc, argv);
@@ -110,4 +110,121 @@ int main(int argc, char* argv[])     {
     label.show();
     return app.exec();
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ծրագիր 4.
+#include <QApplication>
+#include <QLabel>
+#include <QTextCodec>
+int main(int argc, char* argv[])     {
+    QApplication app(argc, argv);
+
+    QLabel label(QObject::tr(
+                     "emblem Qt:&nbsp;<img src=\"img/qt-logo.png\"/>"));
+    label.setAlignment(Qt::AlignCenter);
+    label.setFont(QFont("Arial",12));
+    label.resize(200, 100);
+    label.setWindowTitle(QObject::tr("text with picture"));
+    label.show();
+    return app.exec();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ծրագիր 4.1
+#include <QLabel>
+#include <QTextCodec>
+#include <QApplication>
+
+int main( int argc, char *argv[] ) {
+    QApplication app(argc, argv);
+    QLabel label( QObject::tr(
+                      "Address in Internet: "
+                      "<a href=\"https://www.google.com/search?q=picture&rlz=1C1CHBF_enAM885AM885&sxsrf=AOaemvK6JNcG6c0TT050yU6fkK8m6dclKA:1636523433022&source=lnms&tbm=isch&sa=X&sqi=2&ved=2ahUKEwi-v5DvjI30AhWCA2MBHWxFBGQQ_AUoAXoECAEQAw&biw=1536&bih=754&dpr=1.25#imgrc=or8MqRcrL-eX2M\">"
+                      "pic</a><br/>"
+                      "E-mail: <a href=\"mailto:name@server.ru"
+                      "?subject=Книга 'Qt4 Cookbook'&body=Здравствуй, Юрий!\">"
+                      "name@server.ru</a>" ) );
+    label.setOpenExternalLinks(true);
+    label.setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    label.setAlignment(Qt::AlignCenter);
+
+//     label.setTextInteractionsFlags(Qt::TextEditorInteraction);
+
+    QFont font("Serif", 12, QFont::Bold);
+    label.setFont(font);
+
+    label.resize(500, 100);
+    label.setWindowTitle(QObject::tr("Надпись со ссылкой"));
+    label.show();
+    return app.exec();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ծրագիր 5
+#include <QApplication>
+#include <QLabel>
+#include <QVBoxLayout>
+int main(int argc, char* argv[])     {
+    QApplication app(argc, argv);
+    QWidget win;
+    QVBoxLayout* layout = new QVBoxLayout(&win);
+    QLabel* label1 = new QLabel ("One",&win);
+    QLabel* label2 = new QLabel ("Two",&win);
+    label1->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    label2->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    layout->addWidget(label1);
+    layout->addWidget(label2);
+    win.setLayout(layout);
+    win.show();
+    return app.exec();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 6
+
+#include <QApplication>
+#include <QLabel>
+#include <QGridLayout>
+int main(int argc, char* argv[])     {
+    QApplication app(argc, argv);
+    QWidget win;
+    QGridLayout* layout = new QGridLayout(&win);
+    QLabel* label1 = new QLabel ("One");
+    QLabel* label2 = new QLabel ("Two");
+    QLabel* label3 = new QLabel ("Three");
+    QLabel* label4 = new QLabel ("Four");
+//    label2->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+    layout->addWidget(label1, 0, 0, Qt::AlignCenter);
+    layout->addWidget(label2, 0, 1, Qt::AlignCenter);
+    layout->addWidget(label3, 1, 0, Qt::AlignCenter);
+    layout->addWidget(label4, 1, 1, Qt::AlignCenter);
+    win.setLayout(layout);
+    win.show();
+    return app.exec();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Ծրագիր 7
+
+#include <QtGui>
+#include <QApplication>
+#include <QLineEdit>
+int main(int argc, char* argv[]){
+    QApplication app(argc, argv);
+    QLineEdit  le("");
+    le.setAlignment(Qt::AlignCenter);
+    le.setFont(QFont("Tahoma",50));
+    le.setWindowTitle("QLineEdit");
+    le.setEchoMode(QLineEdit::Password);
+    le.show();
+    return app.exec();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

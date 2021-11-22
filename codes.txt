@@ -57,7 +57,26 @@ int main(int argc, char *argv[]) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Ծրագիր 1.4.
 Լիդիա
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include "mainwindow.h"
+#include <QApplication>
+#include <QtCore>
+#include <iostream>
+#include <QObject>
+#include <QString>
+
+int main(int argc, char *argv[]) {
+    QCoreApplication app(argc, argv);
+
+   #ifdef Q_WS_WIN
+   #else
+   #endif
+
+   QDateTime now = QDateTime::currentDateTime();
+   QString s = QObject::tr("Сейчас")
+             + now.toString("dd.MM.yyyy  hh:mm:ss.zzz");
+
+return app.exec();
+
 Ծրագիր2
 header{
 #ifndef _MYWIN_H_

@@ -2,7 +2,7 @@ Qt codes
 Ծրագիր 1. //Qt-ի դատարկ պատուհան
 
 #include <QApplication>
-#include <QMainWindow>
+#include <QMainWindow> 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     QMainWindow mw;
@@ -247,9 +247,223 @@ int main(int argc, char* argv[]){
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Ծրագիր 7.1.1, 7.1.2, 7.1.3(Լիդիա՞)
+Ծրագիր 7.1.1
+7.1.1dialog.h
+
+#ifndef DIALOG_H
+#define DIALOG_H
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QMainWindow>
+class Qstring;
+class QLineEdit;
+
+class Dialog : public QDialog {
+    Q_OBJECT
+public:
+Dialog(QWidget *parent=0);
+    QString getString();
+
+private:
+    QLineEdit *m_le;
+};
+
+
+#endif // DIALOG_H
+7.1.2 dialog.cpp
+
+#include <QtGui>
+
+#include "dialog.h"
+
+Dialog::Dialog(QWidget *parent)
+      : QDialog(parent) {
+
+    QLabel *label = new QLabel(tr("Введите строку:"), this);
+    m_le = new QLineEdit("", this);
+
+    QDialogButtonBox *dbb = new QDialogButtonBox(Qt::Horizontal, this);
+dbb->addButton(QDialogButtonBox::Ok);
+dbb->addButton(QDialogButtonBox::Cancel);
+
+connect(dbb, SIGNAL(accepted()), this, SLOT(accept()));
+connect(dbb, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+layout->addWidget(label);
+layout->addWidget(m_le);
+layout->addWidget(dbb);
+setLayout(layout);
+}
+
+QString Dialog::getString(){
+return m_le->text();
+}
+class MainWin : public QMainWindow {
+   Q_OBJECT
+public:
+MainWin(QWidget *parent = 0);
+public slots:
+void start();
+};
+7.1.3 main.cpp
+
+#include "mainwindow.h"
+
+#include <QApplication>
+#include <QtGui>
+#include "mainwin.h"
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    MainWin *win = new MainWin();
+win->show();
+return app.exec();}
+7.1.4 mainwin.h
+
+#ifndef MAINWIN_H
+#define MAINWIN_H
+#include <QMainWindow>
+#include <QPushButton>
+#include <QMessageBox>
+#include <qdialog.h>
+#include <QDialog>
+
+
+class MainWin : public QMainWindow {
+    Q_OBJECT
+public:
+MainWin(QWidget *parent = 0);
+public slots:
+void start();
+};
+
+#endif // MAINWIN_H
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Ծրագիր 7.2.1, 7.2.2, 7.2.3(Լիդիա՞)
+Ծրագիր 7.2.1
+7.2.1 mainwin.h 
+
+mainwin.h
+#ifndef MAINWIN_H
+#define MAINWIN_H
+#include <QMainWindow>
+#include <QPushButton>
+#include <QMessageBox>
+#include <qdialog.h>
+#include <QDialog>
+
+
+class MainWin : public QMainWindow {
+    Q_OBJECT
+public:
+MainWin(QWidget *parent = 0);
+public slots:
+void start();
+};
+
+#endif // MAINWIN_H
+
+7.2.2
+
+mainwin.cpp
+#include <QtGui>
+
+#include "mainwin.h"
+#include "dialog.h"
+
+MainWin::MainWin(QWidget *parent)
+       : QMainWindow(parent) {
+
+    QPushButton *button = new QPushButton(
+tr("&Старт") );
+button->setFont(QFont("Times", 16, QFont::Bold));
+setCentralWidget(button);
+resize(button->sizeHint());
+connect( button, SIGNAL( clicked() ),
+this,   SLOT( start() ) );
+}
+void MainWin::start() {
+    Dialog *dlg = new Dialog(this);
+if (dlg->exec() == QDialog::Accepted)
+        QMessageBox::information(
+this, dlg->tr("Результат"),
+dlg->tr("Вы ввели строку:\n%1")
+.arg(dlg->getString()),
+            QMessageBox::Ok );
+}
+7.2.3 
+
+main.cpp
+#include "mainwindow.h"
+
+#include <QApplication>
+#include <QtGui>
+#include "mainwin.h"
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    MainWin *win = new MainWin();
+win->show();
+return app.exec();}
+
+7.2.4
+dialog.h
+#ifndef DIALOG_H
+#define DIALOG_H
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+class Qstring;
+class QLineEdit;
+
+class Dialog : public QDialog {
+    Q_OBJECT
+public:
+Dialog(QWidget *parent=0);
+    QString getString();
+
+private:
+    QLineEdit *m_le;
+};
+
+
+#endif // DIALOG_H
+7.2.5
+
+dialog.cpp
+#include <QtGui>
+
+#include "dialog.h"
+
+Dialog::Dialog(QWidget *parent)
+      : QDialog(parent) {
+
+    QLabel *label = new QLabel(tr("Введите строку:"), this);
+    m_le = new QLineEdit("", this);
+
+    QDialogButtonBox *dbb = new QDialogButtonBox(Qt::Horizontal, this);
+dbb->addButton(QDialogButtonBox::Ok);
+dbb->addButton(QDialogButtonBox::Cancel);
+
+connect(dbb, SIGNAL(accepted()), this, SLOT(accept()));
+connect(dbb, SIGNAL(rejected()), this, SLOT(reject()));
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+layout->addWidget(label);
+layout->addWidget(m_le);
+layout->addWidget(dbb);
+setLayout(layout);
+}
+
+QString Dialog::getString(){
+return m_le->text();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Ծրագիր 8
 
@@ -305,7 +519,194 @@ int main(int argc, char* argv[])     {
     window.show();
     return app.exec();
 }
+Ծրագիր 10
+10.1
+mydialog.h
+#ifndef MYDIALOG_H
+#define MYDIALOG_H
+#include <QtGui>
+#include <QSpinBox>
+#include <QDialog>
+#include <QDial>
+#include <QSlider>
+#include <QProgressBar>
+#include <QApplication>
+#include<QVBoxLayout>
+
+class MyDialog : public QDialog {
+    Q_OBJECT
+public:
+    MyDialog();
+private:
+    QSpinBox *m_sb;
+    QDial *m_dial;
+QSlider *m_slider;
+QProgressBar *m_pb;
+          } ;
+
+#endif // MYDIALOG_H
+
+10.2
+mydialog.cpp
+#include <QtGui>
+#include "mydialog.h"
+#define MAXVAL  99
+#define MINVAL  0
+MyDialog :: MyDialog() : QDialog() {
+    m_sb = new QSpinBox(this);
+m_sb ->setRange(MINVAL, MAXVAL);
+m_dial = new QDial(this);
+m_dial->setRange(MINVAL, MAXVAL);
+m_dial->setNotchesVisible(true);
+m_slider = new QSlider(Qt::Horizontal, this);
+m_slider ->setRange(MINVAL, MAXVAL);
+m_slider->setTickInterval(10);
+m_slider->setTickPosition(QSlider::TicksAbove);
+m_pb = new QProgressBar(this);
+m_pb->setRange(MINVAL, MAXVAL);
+QVBoxLayout *layout = new QVBoxLayout(this);
+layout->addWidget(m_sb);
+layout->addWidget(m_dial);
+layout->addWidget(m_slider);
+layout->addWidget(m_pb);
+setLayout(layout);
+connect(m_sb, SIGNAL(valueChanged(int)),
+   m_dial, SLOT(setValue(int)));
+connect(m_sb, SIGNAL(valueChanged(int)),
+   m_slider, SLOT(setValue(int)));
+connect(m_sb, SIGNAL(valueChanged(int)),
+               m_pb, SLOT(setValue(int)));
+connect(m_dial, SIGNAL(valueChanged(int)),
+               m_sb, SLOT(setValue(int)));
+connect(m_dial, SIGNAL(valueChanged(int)),
+               m_slider, SLOT(setValue(int)));
+connect(m_dial, SIGNAL(valueChanged(int)),
+               m_pb, SLOT(setValue(int)));
+connect(m_slider, SIGNAL(valueChanged(int)),
+               m_sb, SLOT(setValue(int)));
+connect(m_slider, SIGNAL(valueChanged(int)),
+               m_dial, SLOT(setValue(int)));
+connect(m_slider, SIGNAL(valueChanged(int)),
+               m_pb, SLOT(setValue(int)));
+        }
+
+10.3
+main.cpp 
+#include "mainwindow.h"
+#include <QApplication>
+#include "mydialog.h"
+int main(int argc, char* argv[])     {
+QApplication app(argc, argv);
+MyDialog dialog;
+dialog.show();
+return app.exec();
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 11
+mycheckbox.h
+#ifndef MYCHECKBOX_H
+#define MYCHECKBOX_H
+#include <QtGui>
+#include <QCheckBox>
+#include <QEvent>
+#include <QMouseEvent>
+class MyCheckBox : public QCheckBox {
+      Q_OBJECT
+ public:
+    MyCheckBox(const QString& text, QWidget *parent=0 );
+ protected:
+    virtual void mousePressEvent(QMouseEvent *event);
+ };
+
+#endif // MYCHECKBOX_H
+
+
+mycheckbox.cpp
+#include "mycheckbox.h"
+MyCheckBox::MyCheckBox(const QString& text,
+ QWidget *parent /*=0*/)
+   :QCheckBox(text, parent)  {
+    setTristate(true);
+ }
+  void MyCheckBox::mousePressEvent(QMouseEvent *event) {
+   switch(event->button()) {
+ case Qt::LeftButton : setCheckState(Qt::Checked);
+            break;
+     case Qt::RightButton : setCheckState(Qt::Unchecked);
+            break;
+   case Qt::MiddleButton : setCheckState(Qt::PartiallyChecked);
+    }
+  event->ignore();
+  }
+
+
+main.cpp
+#include "mainwindow.h"
+
+#include <QApplication>
+#include <mycheckbox.h>
+ int main(int argc, char* argv[]) {
+   QApplication app(argc, argv);
+   MyCheckBox chb(QObject::tr("Unusual checkbox"));
+   chb.show();
+   return app.exec();
+ }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 11․1
+mywindow.h
+#ifndef MYWINDOW_H
+#define MYWINDOW_H
+#include <QtGui>
+#include <QMainWindow>
+#include <QString>
+#include <QCloseEvent>
+#include <QMessageBox>
+
+class MyWin : public QMainWindow {
+   Q_OBJECT
+public:
+MyWin(const QString& title);
+protected:
+void closeEvent(QCloseEvent *event);
+};
+
+#endif // MYWINDOW_H
+
+mywindow.cpp
+#include "mywindow.h"
+
+MyWin::MyWin(const QString& title)
+    : QMainWindow(0) {
+setWindowTitle(title);
+resize(200, 120);
+move(150, 100);
+}
+
+void MyWin::closeEvent(QCloseEvent *event){
+int r = QMessageBox::question(
+this, tr("Подтвердите"),
+tr("Выйти из программы?"),
+       QMessageBox::Yes | QMessageBox::No,
+       QMessageBox::Yes);
+if (r == QMessageBox::Yes)
+event->accept();
+else
+event->ignore();
+}
+
+main.cpp
+#include "mainwindow.h"
+
+#include <QApplication>
+#include "mywindow.h"
+int main(int argc, char *argv[]) {
+   QApplication app(argc, argv);
+
+   MyWin win(QObject::tr("Мое окно"));
+win.show();
+return app.exec();
+}
+///////////////////////////////////////////////////////////////////////////////////
 Ծրագիր 12
 header{
 #ifndef  _PUSHBUTTON_H_
@@ -531,3 +932,282 @@ int main(int argc, char *argv[]) {
 }
 
 }
+///////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 15.1 
+rbtn.h
+#ifndef  RBTN_H
+#define RBTN_H
+#include <QtGui>
+#include <QRadioButton>
+#include <QDialog>
+#include <QGroupBox>
+#include <QVBoxLayout>
+class MyDialog : public QDialog {
+   Q_OBJECT
+public:
+MyDialog();
+QRadioButton  *m_rb11, *m_rb12, *m_rb13;
+QRadioButton  *m_rb21,   *m_rb22,   *m_rb23;
+};
+#endif // RBTN_H
+
+
+15.2 rbtn.cpp
+#include "rbtn.h"
+#include <QtGui>
+MyDialog::MyDialog()
+       : QDialog() {
+   QGroupBox *group1 = new QGroupBox(tr("Группа &1"));
+   m_rb11 = new QRadioButton(tr("&Первый"), group1);
+   m_rb12 = new QRadioButton(tr("&Второй"), group1);
+   m_rb13 = new QRadioButton(tr("&Третий"), group1);
+   m_rb12->setChecked(true);
+
+   QVBoxLayout *layout1 = new QVBoxLayout(group1);
+   layout1->addWidget(m_rb11);
+   layout1->addWidget(m_rb12);
+   layout1->addWidget(m_rb13);
+   group1->setLayout(layout1);
+
+   QGroupBox *group2 = new QGroupBox(tr("Группа &2"));
+   m_rb21 = new QRadioButton(tr("&Четвёртый"), group2);
+   m_rb22 = new QRadioButton(tr("П&ятый"), group2);
+   m_rb23 = new QRadioButton(tr("&Шестой"), group2);
+   m_rb23->setChecked(true);
+
+   QVBoxLayout *layout2 = new QVBoxLayout(group2);
+   layout2->addWidget(m_rb21);
+   layout2->addWidget(m_rb22);
+   layout2->addWidget(m_rb23);
+   group2->setLayout(layout2);
+
+   QHBoxLayout *layout = new QHBoxLayout(this);
+layout->addWidget(group1);
+layout->addWidget(group2);
+setLayout(layout);
+}
+
+
+15.3 main.cpp
+#include "mainwindow.h"
+
+#include <QApplication>
+#include "rbtn.h"
+#include <QtGui>
+int main(int argc, char *argv[]) {
+   QApplication app(argc, argv);
+   MyDialog dlg;
+dlg.show();
+return app.exec();
+}
+/////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 15.2.1 
+btngr.h
+#ifndef BTNGR_H
+#define BTNGR_H
+#include <QtGui>
+#include <QDialog>
+#include <QButtonGroup>
+#include <QGroupBox>
+#include <QRadioButton>
+#include <QCheckBox>
+#include <QVBoxLayout>
+class MyDialog : public QDialog {
+   Q_OBJECT
+public:
+MyDialog();
+QButtonGroup  *m_gr1;
+QButtonGroup  *m_gr2;
+};
+
+#endif // BTNGR_H
+
+
+15.2.2
+btngr.cpp
+#include "btngr.h"
+MyDialog::MyDialog() : QDialog() {
+
+   QGroupBox *group1 = new QGroupBox(tr("Группа &1"));
+   QRadioButton *b11 = new QRadioButton(tr("&Первый"));
+   QRadioButton *b12 = new QRadioButton(tr("&Второй"));
+   QRadioButton *b13 = new QRadioButton(tr("&Третий"));
+
+   m_gr1 = new QButtonGroup;
+   m_gr1->setExclusive(true);
+   m_gr1->addButton(b11, 1);
+   m_gr1->addButton(b12, 2);
+   m_gr1->addButton(b13, 3);
+   m_gr1->button(2)->setChecked(true);
+
+   QGroupBox *group2 = new QGroupBox(tr("Группа &2"));
+   QCheckBox *b21 = new QCheckBox(tr("&Четвёртый"));
+   QCheckBox *b22 = new QCheckBox(tr("П&ятый"));
+   QCheckBox *b23 = new QCheckBox(tr("&Шестой"));
+
+   m_gr2 = new QButtonGroup;
+   m_gr2->setExclusive(false);
+   m_gr2->addButton(b21, 1);
+   m_gr2->addButton(b22, 2);
+   m_gr2->addButton(b23, 3);
+   m_gr2->button(1)->setChecked(true);
+   m_gr2->button(2)->setChecked(true);
+
+   QVBoxLayout *layout1 = new QVBoxLayout;
+   layout1->addWidget(b11);
+   layout1->addWidget(b12);
+   layout1->addWidget(b13);
+   group1->setLayout(layout1);
+
+   QVBoxLayout *layout2 = new QVBoxLayout;
+   layout2->addWidget(b21);
+   layout2->addWidget(b22);
+   layout2->addWidget(b23);
+   group2->setLayout(layout2);
+
+   QHBoxLayout *layout = new QHBoxLayout;
+layout->addWidget(group1);
+layout->addWidget(group2);
+setLayout(layout);
+}
+
+
+15.2.3 main.cpp
+#include "mainwindow.h"
+
+#include <QApplication>
+#include "btngr.h"
+#include <QtGui>
+int main(int argc, char *argv[]) {
+   QApplication app(argc, argv);
+   MyDialog dlg;
+dlg.show();
+return app.exec();
+}
+//////////////////////////////////////////////////////////////////////////////
+16-՞
+
+
+
+
+
+
+Ծրագիր 20
+#include "mainwindow.h"
+#include <QApplication>
+#include <QtGui>
+#include <QTextEdit>
+#include <QVBoxLayout>
+#include <QMenu>
+#include <QDialog>
+#include <QMenuBar>
+int main(int argc, char **argv){
+   QApplication app(argc, argv);
+   QDialog d;
+   QMainWindow *w = new QMainWindow(0);
+   QTextEdit *te = new QTextEdit(w);
+w->setCentralWidget(te);
+   QVBoxLayout *layout = new QVBoxLayout(&d);
+layout->addWidget(w); // կամ w->setParent(&d);
+
+   QMenu *menu = new QMenu("File", w);
+menu->addAction("Act1");    menu->addAction("Act2");    menu->addAction("Act3");
+w->menuBar()->addMenu(menu);
+return d.exec();  }
+////////////////////////////////////////////////////////////////////////////
+
+Ծրագիր 21․1
+mainwin.h
+#ifndef MAINWIN_H
+#define MAINWIN_H
+#include <QtGui>
+#include <QMainWindow>
+#include <QTextEdit>
+#include <QLabel>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QStatusBar>
+#include <QMenu>
+#include <QMenuBar>
+class MainWin : public QMainWindow {
+   Q_OBJECT
+public:
+MainWin();
+private:
+   QTextEdit *te;    QStatusBar *sb;    QLabel *label;    QLineEdit *edit;
+   QComboBox *combo;    QAction *exitAction;    QMenu *fileMenu;
+};
+#endif // MAINWIN_H
+21.2 mainwin.cpp
+#include <QtGui>
+#include "mainwin.h"
+
+
+MainWin::MainWin(){
+te = new QTextEdit(this);
+setCentralWidget(te);
+
+   QStatusBar *sb = new QStatusBar(this);
+label = new QLabel(sb); //(tr("Подсказка"), sb);
+connect(sb, SIGNAL(messageChanged(const QString &)),  label, SLOT(setText(const QString &)) );
+
+edit = new QLineEdit(tr("Введите строку"), sb);
+
+combo = new QComboBox();
+combo->addItem( style()->standardIcon(QStyle::SP_ComputerIcon), tr("Мой компьютер"));
+combo->addItem( style()->standardIcon(QStyle::SP_DriveNetIcon),  tr("Сетевое окружение"));
+combo->setCurrentIndex(0);
+
+sb->addPermanentWidget(label, 1); sb->addPermanentWidget(edit, 2); sb->addPermanentWidget(combo, 1);
+setStatusBar(sb);
+sb->showMessage(tr("Готов"), 3000);
+
+exitAction = new QAction(tr("В&ыход"), this);
+exitAction->setStatusTip(tr("Выход из программы"));
+exitAction->setShortcut(tr("Ctrl+Q"));
+connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+
+fileMenu = menuBar()->addMenu(tr("&Файл"));    fileMenu->addAction(exitAction);
+
+setWindowTitle(QMainWindow::tr("Виджеты в строке состояния"));
+}
+21.3main.cpp
+#include "mainwindow.h"
+
+#include <QApplication>
+#include <QtGui>
+#include <mainwin.h>
+int main(int argc, char *argv[]) {
+   QApplication app(argc, argv);
+   MainWin mw;
+mw.resize(400, 300);
+mw.show();
+return app.exec();
+}
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 26
+#include "mainwindow.h"
+
+#include <QApplication>
+#include <QtGui>
+#include <QMenu>
+#include <QMenuBar>
+int main(int argc, char** argv) {
+QApplication app(argc, argv);
+QMenuBar pmnuBar;       QMenu* pmnu = new QMenu("&Menu");
+pmnu->setTearOffEnabled(true);   pmnu->addAction("Item&l");     pmnu->addAction("Item&2") ;
+pmnu->addAction("&Exit", &app, SLOT(quit()));
+pmnuBar.addMenu(pmnu);   pmnuBar.show();
+return app.exec();
+}
+////////////////////////////////////////////////////////////////////////////////////////////

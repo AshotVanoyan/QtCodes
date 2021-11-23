@@ -247,4 +247,287 @@ int main(int argc, char* argv[]){
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 7.1.1, 7.1.2, 7.1.3(Լիդիա՞)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 7.2.1, 7.2.2, 7.2.3(Լիդիա՞)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 8
 
+#include <QApplication>
+#include <QPushButton>
+int main(int argc, char* argv[])     {
+    QApplication app(argc, argv);
+    QPushButton button(QString::fromLocal8Bit("&Exit"));
+    button.setFont(QFont("Times", 16, QFont::Bold));
+    QObject::connect(
+                &button,
+                SIGNAL(clicked()),
+                &app,
+                SLOT(quit()));
+    button.show();
+    return app.exec();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 9
+
+#include <QApplication>
+# include <QVBoxLayout>
+# include <QLabel>
+# include <QSpinBox>
+# include <QSlider>
+int main(int argc, char* argv[])     {
+    QApplication app(argc, argv);
+    QLabel* label = new QLabel();
+    QSpinBox* spinBox = new QSpinBox;
+    spinBox->setMinimum(0);
+    spinBox->setMaximum(100);
+    spinBox->setSingleStep(5);
+    QSlider* slider = new QSlider(Qt::Horizontal);
+    slider->setRange(spinBox->minimum(), spinBox->maximum());
+    slider->setSingleStep(10);
+    slider->setTickPosition(QSlider::TicksBelow);
+    slider->setTickInterval(10);
+    QObject ::connect(spinBox, SIGNAL(valueChanged(int)),
+                      label, SLOT(setNum(int)));
+    QObject ::connect(spinBox, SIGNAL(valueChanged(int)),
+                      slider, SLOT(setValue(int)));
+    QObject ::connect(slider, SIGNAL(valueChanged(int)),
+                      label, SLOT(setNum(int)));
+    QObject ::connect(slider, SIGNAL(valueChanged(int)),
+                      spinBox, SLOT(setValue(int)));
+    spinBox->setValue(20);
+    QWidget window;
+    QVBoxLayout* mainLayout = new QVBoxLayout(&window);
+    mainLayout->addWidget(label);
+    mainLayout->addWidget(spinBox);
+    mainLayout->addWidget(slider);
+    window.show();
+    return app.exec();
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 12
+header{
+#ifndef  _PUSHBUTTON_H_
+#define  _PUSHBUTTON_H_
+#include <QMainWindow>
+#include <QtGui>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QApplication>
+#include <QMessageBox>
+#include <QStyleFactory>
+#include <QAction>
+
+
+class MyWin : public QMainWindow {
+    Q_OBJECT
+public:
+    MyWin();
+private slots:
+    void btnClicked();
+    void styleChanged(QAction *action);
+};
+#endif
+}
+
+cpp{
+#include "header.h"
+
+
+MyWin::MyWin() : QMainWindow() {
+    setWindowTitle(tr("Кнопки QPushButton"));
+    QVBoxLayout *lay = new QVBoxLayout(this);
+    lay->setMargin(5);
+    lay->setSpacing(4);
+    QPushButton *b1 = new QPushButton(tr("Кнопка &1"));
+    lay->addWidget(b1, 1, Qt::AlignCenter);
+    connect(b1, SIGNAL(clicked()), this, SLOT(btnClicked()) );
+    QPushButton *b2 = new QPushButton(tr("Кнопка &2"), this);
+    b2->setFlat(true);
+    b2->setStyleSheet(
+                QString("QPushButton:hover:!pressed {color:%1; "
+                        "background-color: rgb(100,200,30); "
+                        "border-width: 1px; border-style: solid; "
+                        "border-radius: 6px; border-color: white;}")
+                .arg(QColor(240,210,170).name()));
+    lay->addWidget(b2, 1, Qt::AlignCenter);
+    connect(b2, SIGNAL(clicked()), this, SLOT(btnClicked()) );
+}
+
+
+void MyWin::btnClicked() {
+    qApp->beep();
+    QMessageBox::information(this, tr("Внимание"),tr("Вы нажали кнопку!"),QMessageBox::Ok);}
+
+void MyWin::styleChanged(QAction *action) {
+    qApp->setStyle(QStyleFactory::create(action->actionGroup()->checkedAction()->text()));
+}
+}
+
+
+main{
+#include "header.h"
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    MyWin wn;    wn.show();
+    return app.exec();
+}
+
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 13
+header{
+#include <QtGui>
+#include <QMainWindow>
+#include <QAction>
+#include <QtGui>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QStyleFactory>
+#include <QMenu>
+#include <QApplication>
+#include <QMessageBox>
+
+
+class MyWin : public QMainWindow {
+    Q_OBJECT
+public:
+    MyWin();
+private slots:
+    void btnClicked();
+    void styleChanged(QAction *action);
+};
+}
+
+cpp{
+#include "header.h"
+
+
+MyWin::MyWin(): QMainWindow() {
+    setWindowTitle(tr("Кнопки QPushButton"));
+    QWidget *cw = new QWidget(this);
+    QVBoxLayout *lay = new QVBoxLayout(this);
+    lay->setMargin(5);  lay->setSpacing(4);
+    QPushButton *b3 = new QPushButton(
+                // style()->standardIcon(QStyle::SP_FileDialogBack),
+                QIcon(":/img/exit.png"), tr("В&ыход"), this);
+    lay->addWidget(b3, 1, Qt::AlignCenter);
+    connect(b3, SIGNAL(clicked()),  this, SLOT(close()) );
+    QActionGroup *ag = new QActionGroup(this);
+    ag->setExclusive(true);
+    QStringList styles = QStyleFactory::keys();
+    foreach ( QString s, styles ) {
+        QAction *a = ag->addAction(s);
+        a->setCheckable(true);
+    }
+    connect(ag, SIGNAL(triggered(QAction*)), this, SLOT(styleChanged(QAction*)) );
+    QMenu *menu = new QMenu(tr("Меню"), this);
+    menu->addActions(ag->actions());
+    QPushButton *b4 = new QPushButton(tr("&Стиль"), this);
+    b4->setStyleSheet(
+                QString("QPushButton:hover:!pressed{color:%1;}")
+                .arg(QColor(240,20,10).name()));
+    b4->setMenu(menu);
+    lay->addWidget(b4, 1, Qt::AlignCenter);
+    cw->setLayout(lay);
+    setCentralWidget(cw);
+}
+
+void MyWin::btnClicked() {
+    qApp->beep();
+    QMessageBox::information(this, tr("Внимание"),tr("Вы нажали кнопку!"),QMessageBox::Ok);
+}
+
+void MyWin::styleChanged(QAction *action) {
+    qApp->setStyle(QStyleFactory::create(action->actionGroup()->checkedAction()->text()));
+}
+}
+
+
+main{
+#include "header.h"
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    MyWin wn;
+    wn.show();
+    return app.exec();
+}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Ծրագիր 14
+
+header{
+#ifndef  _CHECK_H_
+#define _CHECK_H_
+#include <QtGui>
+#include <QDialog>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QApplication>
+#include <QGridLayout>
+
+class MyDialog : public QDialog {
+    Q_OBJECT
+public:
+    MyDialog();
+    QPushButton  *m_btn1,  *m_btn2;
+    QCheckBox    *m_chb;
+    QRadioButton *m_rb1, *m_rb2;
+public slots:
+    void onClick();
+};
+#endif
+}
+
+cpp{
+#include "header.h"
+MyDialog::MyDialog()  : QDialog() {
+    QGridLayout *layout = new QGridLayout(this);
+
+    m_btn1 = new QPushButton(tr("&Нажми меня"), this);
+    connect(m_btn1, SIGNAL(clicked()), this, SLOT(onClick()));
+    layout->addWidget(m_btn1, 0, 0);
+
+    m_btn2 = new QPushButton(tr("Я нажмусь сама"), this);
+    layout->addWidget(m_btn2, 0, 1);
+
+    m_chb = new QCheckBox(tr("Пометка"), this);
+    m_chb->setCheckState(Qt::Unchecked);
+    layout->addWidget(m_chb, 1, 1);
+
+    m_rb1 = new QRadioButton(tr("&Первый"), this);
+    layout->addWidget(m_rb1, 2, 0);
+
+    m_rb2 = new QRadioButton(tr("&Второй"), this);
+    m_rb2->setChecked(true);
+    layout->addWidget(m_rb2, 2, 1);
+    setLayout(layout);
+}
+
+void MyDialog::onClick() {
+    m_btn2->animateClick(200);
+    m_chb->animateClick(300);
+    if (!m_chb->isChecked())
+        m_rb1->animateClick(400);
+    else
+        m_rb2->animateClick(400);
+}
+
+}
+
+main{
+#include "header.h"
+#include <QApplication>
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    MyDialog dlg;
+    dlg.show();
+    return app.exec();
+}
+
+}

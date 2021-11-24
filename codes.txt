@@ -1023,8 +1023,7 @@ QButtonGroup  *m_gr2;
 #endif // BTNGR_H
 
 
-15.2.2
-btngr.cpp
+15.2.2 btngr.cpp
 #include "btngr.h"
 MyDialog::MyDialog() : QDialog() {
 
@@ -1085,13 +1084,97 @@ dlg.show();
 return app.exec();
 }
 //////////////////////////////////////////////////////////////////////////////
-16-՞
+Ծրագիր 16
+header{
+#ifndef _DIALOG_H_
+#define _DIALOG_H_
+#include <QtGui>
+#include <QDialog>
+#include <QLineEdit>
+#include <QDateEdit>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QTextEdit>
+#include <QApplication>
+
+class Dialog : public QDialog {
+    Q_OBJECT
+public:
+    Dialog(const QString& surname="",const QString& name="",QDate born=QDate());
+    QString surname();    QString name();    QDate born();
+private:
+    QLineEdit *leSurname;
+    QLineEdit *leName;
+    QDateEdit *deBorn;
+};
+#endif // _DIALOG_H_
+
+}
+
+cpp{
+#include "header.h"
+
+Dialog::Dialog(const QString& surname, const QString& name, QDate born) {
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    QGridLayout* editLayout = new QGridLayout;
+    QDialogButtonBox * btnBox = new QDialogButtonBox(Qt::Horizontal);
+    mainLayout->addLayout(editLayout);
+    mainLayout->addStretch();
+    mainLayout->addWidget(btnBox);
+
+    QLabel *lbSurname = new QLabel(tr("Фамилия:"));
+    QLabel *lbName = new QLabel(tr("Имя:"));
+    QLabel *lbBorn = new QLabel(tr("Дата рождения:"));
+
+    leSurname = new QLineEdit;    leSurname->setText(surname);
+    leName = new QLineEdit;    leName->setText(name);
+    deBorn = new QDateEdit;    deBorn->setDate(born);    deBorn->setCalendarPopup(true);
+    editLayout->addWidget(lbSurname, 0, 0); editLayout->addWidget(lbName, 1, 0);editLayout->addWidget(lbBorn, 2, 0);
+    editLayout->addWidget(leSurname, 0, 1); editLayout->addWidget(leName, 1, 1); editLayout->addWidget(deBorn,2,1);
+    btnBox->addButton(tr("Ok"),QDialogButtonBox::AcceptRole);btnBox->addButton(tr("Отмена"), QDialogButtonBox::RejectRole);
+    setWindowTitle(tr("Сведения о работнике"));
+    connect(btnBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(btnBox, SIGNAL(rejected()), this, SLOT(reject()));
+}
+QString Dialog::surname() {    return leSurname->text();}
+QString Dialog::name() {    return leName->text();}
+QDate Dialog::born() {    return deBorn->date();}
+
+}
+
+main{
+#include "header.h"
+#define  tr  QObject::tr
 
 
+int main(int argc, char *argv[]){
+    QApplication app(argc, argv);
+    QTextEdit te;    te.show();
+    Dialog d( "", "", QDate() );
+    if (d.exec() == QDialog::Accepted)
+        te.append(tr("Вы ввели:\nФамилия: %1\nИмя: %2\nДата рождения: %3")
+                  .arg(d.surname()) .arg(d.name()) .arg(d.born().toString("dd/MM/yyyy")) );
+    else
+        te.append(tr("Вы отказались от ввода данных") );
+    return app.exec();
+}
+
+}
 
 
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 17????????????????
+
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 18????????????????
+
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 19????????????????
 
 
+//////////////////////////////////////////////////////////////////////////////
 Ծրագիր 20
 #include "mainwindow.h"
 #include <QApplication>
@@ -1184,15 +1267,21 @@ mw.resize(400, 300);
 mw.show();
 return app.exec();
 }
-///////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 21????????????????
 
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 22????????????????
 
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 23????????????????
 
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 24????????????????
 
-
-
-
+//////////////////////////////////////////////////////////////////////////////
+Ծրագիր 25???????????????????????????????
 
 //////////////////////////////////////////////////////////////////////////////////////
 Ծրագիր 26
@@ -1211,3 +1300,4 @@ pmnuBar.addMenu(pmnu);   pmnuBar.show();
 return app.exec();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
+մնացած

@@ -1268,17 +1268,79 @@ mw.show();
 return app.exec();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-Ծրագիր 21????????????????
 
 //////////////////////////////////////////////////////////////////////////////
 Ծրագիր 22????????????????
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 23????????????????
+Ծրագիր 23
+
+#include <QApplication>
+#include <QtGui>
+#include <QProxyStyle>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
+class MyStyle : public QProxyStyle {
+public:
+    MyStyle() {}
+    int styleHint(StyleHint hint,  const QStyleOption *option = 0, const QWidget *widget = 0,                  QStyleHintReturn *returnData = 0) const {
+        if (hint == QStyle::SH_DrawMenuBarSeparator)
+            return QStyle::SH_DrawMenuBarSeparator;
+        
+        return QProxyStyle::styleHint(hint, option, widget, returnData);
+    }
+};
+class MainWindow : public QMainWindow{
+public:
+    MainWindow() {
+        QMenu *menu1 = new QMenu("File", this);        menu1->addAction("File Action");
+        QMenu *menu2 = new QMenu("Help", this);       menu2->addAction("Help Action");
+        menuBar()->addMenu(menu1);        menuBar()->addMenu(menu2);
+        
+        menuBar()->setStyle(new MyStyle());
+        menuBar()->insertSeparator(menu2->menuAction());
+    }
+};
+
+int main(int argc, char **argv){
+    QApplication app(argc, argv);
+    MainWindow w;
+    w.show();
+    return app.exec();   }
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 24????????????????
+Ծրագիր 24
+
+#include "mainwindow.h"
+#include <QApplication>
+#include <QtGui>
+#include <QToolBar>
+#include <QToolButton>
+#include <QMenu>
+#include <QMenuBar>
+
+int main(int argc, char **argv){
+    QApplication app(argc, argv);
+    
+    QPixmap pix(15,15);    pix.fill(Qt::red);
+    
+    QMainWindow w;
+    QAction *action1 = new QAction("Action1", &w);    QAction *action2 = new QAction("Action2", &w);
+    QToolBar *toolBar = new QToolBar(&w);    toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    toolBar->addAction(action1);    toolBar->addAction(action2);
+    
+    QList<QToolButton*> toolButtons = w.findChildren<QToolButton*>("toolBar");
+    for (int i = 0; i < toolButtons.size(); i++) {
+        QToolButton button = (QToolButton)toolButtons.at(i);
+        button.setIcon(pix);    }
+    
+    QMenu *menu = new QMenu("File", &w);
+    menu->addAction(action1);    menu->addAction(action2);
+    w.menuBar()->addMenu(menu);
+    w.addToolBar(toolBar);
+    w.show();
+    return app.exec();    }
 
 //////////////////////////////////////////////////////////////////////////////
 Ծրագիր 25???????????????????????????????

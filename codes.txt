@@ -1248,7 +1248,26 @@ int main(int argc, char** argv) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 18????????????????
+Ծրագիր 18//անսխալ, բայ չաշխատող
+
+#include <QApplication>
+#include <QFileDialog>
+#include <QPushButton>
+#include <QLayout>
+#include <QWidget>
+#include <QGridLayout>
+
+int main(int argc, char *argv[]){
+    QApplication app(argc, argv);
+    QFileDialog dlg;
+    QPushButton *button = new QPushButton(&dlg);
+    button->setText(" E&xit ");
+    QGridLayout *layout = (QGridLayout*)dlg.layout();
+    layout->addWidget(button, layout->rowCount(), 0, 1, 3, Qt::AlignCenter);
+    QObject::connect( button, SIGNAL(clicked()), &app, SLOT(quit()));
+    dlg.show();
+    return app.exec();
+}
 
 //////////////////////////////////////////////////////////////////////////////
 Ծրագիր 19????????????????

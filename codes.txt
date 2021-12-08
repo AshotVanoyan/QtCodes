@@ -1165,7 +1165,87 @@ int main(int argc, char *argv[]){
 
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 17????????????????
+Ծրագիր 17
+inputdialog.h
+#ifndef InputDialog_h
+#define InputDialog_h
+#include <QDialog>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+#include <QGridLayout>
+class QLineEdit;
+class InputDialog : public QDialog {
+    Q_OBJECT
+private:
+    QLineEdit* Name,*surName;
+public:
+    InputDialog(QWidget* pwgt = 0);
+    QString firstName() const;
+    QString lastName () const;
+};
+#endif
+inputdialog.cpp
+#include <inputdialog.h>
+InputDialog::InputDialog(QWidget* pwgt/*= 0*/) : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint){
+    Name = new QLineEdit;
+    surName = new QLineEdit;
+    QLabel* plblFirstName = new QLabel("&First Name");
+    QLabel* plblLastName = new QLabel("&Last Name");
+    plblFirstName->setBuddy(Name);
+    plblLastName->setBuddy(surName);
+    QPushButton* pcmdOk = new QPushButton("&0k");
+    QPushButton* pcmdCancel = new QPushButton("&Cancel");
+    connect(pcmdOk, SIGNAL(clicked()), SLOT(accept()));
+    connect(pcmdCancel, SIGNAL(clicked()), SLOT(reject()));
+    
+    //Layout setup
+    
+    QGridLayout* ptopLayout = new QGridLayout;
+    ptopLayout->addWidget(plblFirstName, 0, 0);
+    ptopLayout->addWidget(plblLastName, 1, 0);
+    ptopLayout->addWidget(Name, 0, 1);
+    ptopLayout->addWidget(surName, 1, 1);
+    ptopLayout->addWidget(pcmdOk, 2,0);
+    ptopLayout->addWidget(pcmdCancel, 2, 1);
+    setLayout(ptopLayout); }
+QString InputDialog::firstName() const    
+{ return Name->text(); }
+QString InputDialog::lastName() const   
+{ return surName->text () ; }
+
+startdialog.h
+#ifndef STARTDIALOG_H
+#define STARTDIALOG_H
+#include <QtGui>
+#include <inputdialog.h>
+#include <QPushButton>
+#include <QMessageBox>
+class StartDialog : public QPushButton {
+    Q_OBJECT
+public:
+    StartDialog(QWidget* pwgt =0) : QPushButton("Press Me", pwgt)   {
+        connect(this, SIGNAL(clicked()), SLOT (slotButtonClicked() )) ;
+    }
+public slots:
+    void slotButtonClicked() {
+        InputDialog* pDialog = new InputDialog;
+        if (pDialog->exec() == QDialog::Accepted) {
+            QMessageBox::information(0, "Info", "Name: " + pDialog->firstName() + "\nSurname: " + pDialog->lastName () ); }
+        delete pDialog; }
+};
+#endif //_StartDialog_h_
+
+main.cpp
+#include "mainwindow.h"
+#include <QApplication>
+#include <startdialog.h>
+int main(int argc, char** argv) {
+    QApplication app(argc, argv);
+    StartDialog startDialog;
+    startDialog.show();
+    return app.exec();
+}
 
 //////////////////////////////////////////////////////////////////////////////
 Ծրագիր 18????????????????

@@ -1248,29 +1248,46 @@ int main(int argc, char** argv) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 18//անսխալ, բայ չաշխատող
+Ծրագիր 18
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QPushButton>
-#include <QLayout>
-#include <QWidget>
-#include <QGridLayout>
 
-int main(int argc, char *argv[]){
+int main(int argc, char **argv){
     QApplication app(argc, argv);
     QFileDialog dlg;
     QPushButton *button = new QPushButton(&dlg);
     button->setText(" E&xit ");
-    QGridLayout *layout = (QGridLayout*)dlg.layout();
-    layout->addWidget(button, layout->rowCount(), 0, 1, 3, Qt::AlignCenter);
     QObject::connect( button, SIGNAL(clicked()), &app, SLOT(quit()));
     dlg.show();
     return app.exec();
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 19????????????????
+Ծրագիր 19
+
+#include <QtGui>
+#include <QFileDialog>
+#include <QListView>
+#include <QApplication>
+#include <QTreeView>
+
+int main(int argc, char **argv){
+    QApplication app(argc, argv);
+    QFileDialog d;
+    d.setFileMode(QFileDialog::DirectoryOnly);
+    QListView *v = d.findChild<QListView*>("listView");
+    if (v)
+        v->setSelectionMode(QAbstractItemView::MultiSelection);
+    QTreeView *t = d.findChild<QTreeView*>();
+    if (t)
+        t->setSelectionMode(QAbstractItemView::MultiSelection);
+
+    return d.exec();
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1369,7 +1386,109 @@ return app.exec();
 
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 22????????????????
+Ծրագիր 22
+header{
+#include <QtGui>
+#include <QMainWindow>
+#include <QLabel>
+#include <QMessageBox>
+#include <QTextCodec>
+#include <QAction>
+#include <QMenu>
+#include <QMenuBar>
+#include <QLabel>
+#include <QStatusBar>
+
+class _MainWindow : public QMainWindow {
+    Q_OBJECT
+public:    _MainWindow();
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void closeEvent(QCloseEvent *event);
+private slots:
+    void about();
+private:
+    QAction *aboutAction,*exitAction;
+    QMenu *fileMenu;
+    QLabel *sb1, *sb2, *sb3;
+    bool askOnClose();
+};
+
+}
+
+
+cpp{
+#include <QtGui>
+#include "header.h"
+
+
+ _MainWindow::_MainWindow() {
+    QTextCodec *codec = QTextCodec::codecForName("CP1251");
+    QTextCodec::setCodecForLocale(codec);
+    aboutAction = new QAction(tr("&О программе"), this);
+    aboutAction->setStatusTip(tr("Сведения о программе"));
+    connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+
+    exitAction = new QAction(tr("В&ыход"), this);
+    exitAction->setStatusTip(tr("Выход из программы"));
+    exitAction->setShortcut(tr("Ctrl+Q"));
+    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+
+    fileMenu = menuBar()->addMenu(tr("&Файл"));
+    fileMenu->addAction(aboutAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(exitAction);
+
+    sb1 = new QLabel(statusBar());
+    sb2 = new QLabel(statusBar());
+    sb3 = new QLabel(statusBar());
+
+    statusBar()->setSizeGripEnabled(false);
+    statusBar()->addWidget(sb1, 2);
+    statusBar()->addWidget(sb2, 1);
+    statusBar()->addWidget(sb3, 1);
+
+    sb1->setText(tr("Privet!"));
+    setMouseTracking(true);
+}
+void _MainWindow::resizeEvent(QResizeEvent *event) {
+    QSize sz = event->size();
+    sb2->setText( QString( "(%1, %2)" ).arg( sz.width() ).arg( sz.height() ) );}
+void _MainWindow::mouseMoveEvent(QMouseEvent *event) {
+    QPoint pos = event->pos();
+    sb3->setText( QString( "%1, %2" ).arg( pos.x() ).arg( pos.y() ) );
+     }
+
+void _MainWindow::about() {
+    QMessageBox::about(this,tr("О программе"),tr("<h2>Простое приложениеQt4</h2><p>Окно с меню"));
+}
+
+bool _MainWindow::askOnClose() {
+    int r = QMessageBox::question(this,tr("Подтвердите"),tr("Выйти из программы?"),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+    return (r == QMessageBox::Yes);
+}
+
+void _MainWindow::closeEvent(QCloseEvent *event) {
+    if (askOnClose()) { event->accept();} else { event->ignore(); }
+}
+
+}
+
+main{
+#include <QtGui>
+#include <QApplication>
+#include "header.h"
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    _MainWindow mainWin;
+    mainWin.show();
+    return app.exec();
+}
+
+}
 
 //////////////////////////////////////////////////////////////////////////////
 Ծրագիր 23

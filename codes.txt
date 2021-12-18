@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
              + now.toString("dd.MM.yyyy  hh:mm:ss.zzz");
 
 return app.exec();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Ծրագիր2
@@ -154,7 +155,6 @@ int main(int argc, char* argv[])     {
 
 Ծրագիր 4.1
 #include <QLabel>
-#include <QTextCodec>
 #include <QApplication>
 
 int main( int argc, char *argv[] ) {
@@ -169,18 +169,17 @@ int main( int argc, char *argv[] ) {
     label.setOpenExternalLinks(true);
     label.setFrameStyle(QFrame::Panel | QFrame::Sunken);
     label.setAlignment(Qt::AlignCenter);
-
-//     label.setTextInteractionsFlags(Qt::TextEditorInteraction);
-
+    
+    //     label.setTextInteractionsFlags(Qt::TextEditorInteraction);
+    
     QFont font("Serif", 12, QFont::Bold);
     label.setFont(font);
-
+    
     label.resize(500, 100);
     label.setWindowTitle(QObject::tr("Надпись со ссылкой"));
     label.show();
     return app.exec();
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Ծրագիր 5
@@ -1392,7 +1391,6 @@ header{
 #include <QMainWindow>
 #include <QLabel>
 #include <QMessageBox>
-#include <QTextCodec>
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
@@ -1424,8 +1422,6 @@ cpp{
 
 
  _MainWindow::_MainWindow() {
-    QTextCodec *codec = QTextCodec::codecForName("CP1251");
-    QTextCodec::setCodecForLocale(codec);
     aboutAction = new QAction(tr("&О программе"), this);
     aboutAction->setStatusTip(tr("Сведения о программе"));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
@@ -1502,7 +1498,8 @@ int main(int argc, char *argv[]) {
 class MyStyle : public QProxyStyle {
 public:
     MyStyle() {}
-    int styleHint(StyleHint hint,  const QStyleOption *option = 0, const QWidget *widget = 0,                  QStyleHintReturn *returnData = 0) const {
+    int styleHint(StyleHint hint,  const QStyleOption *option = 0, const QWidget *widget = 0,
+    QStyleHintReturn *returnData = 0) const {
         if (hint == QStyle::SH_DrawMenuBarSeparator)
             return QStyle::SH_DrawMenuBarSeparator;
         
@@ -1561,7 +1558,7 @@ int main(int argc, char **argv){
     return app.exec();    }
 
 //////////////////////////////////////////////////////////////////////////////
-Ծրագիր 25???????????????????????????????
+Ծրագիր 25?
 
 //////////////////////////////////////////////////////////////////////////////////////
 Ծրագիր 26
@@ -1580,4 +1577,4 @@ pmnuBar.addMenu(pmnu);   pmnuBar.show();
 return app.exec();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
-մնացած
+Ծրագիր 27?
